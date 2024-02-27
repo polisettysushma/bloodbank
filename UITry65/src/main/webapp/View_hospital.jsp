@@ -1,0 +1,93 @@
+<html>
+<title>Index Page</title>
+<%@ page language="java" import="com.mongodb.client.MongoDatabase" %>
+<%@ page language="java"  import="java.sql.*" %>
+<%@ page language="java"  import="org.bson.Document" %>
+<%@ page language="java" import="com.mongodb.MongoClient" %>
+<%@ page language="java" import="java.util.List" %>
+<%@ page language="java" import="java.util.ArrayList" %>
+<%@page language="java" import ="com.mongodb.client.MongoCollection"%>
+<%@ page language="java" import="java.util.*" %>
+<%@ page language="java" import="java.util.ArrayList" %>
+<%@ page language="java" import= "com.mongodb.client.MongoCursor"%>
+<%@ page language="java" import="com.mongodb.client.FindIterable"%>
+
+<style>
+
+body {
+  background-image: url("https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80");
+  background-color: #cccccc;
+  height: 500px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+</style>
+
+<body>
+<br> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+ <table class="table table-hover table-danger">
+<tr><tr>
+<th  class="text-dark"> Hospital Id</th>
+<th class="text-warning"> Hospital name</th>
+ <th class="text-warning"> Hospital Location</th>
+ 
+</tr>
+
+<%
+         try{
+	
+        	
+            //Creating a MongoDB client
+            MongoClient mongo = new MongoClient( "localhost" , 27017 );
+            //Connecting to the database
+            MongoDatabase database = mongo.getDatabase("DPS");
+            //Creating a collection object
+            MongoCollection<Document> collection = database.getCollection("hospitalss");
+            //Retrieving the documents
+            
+            
+            
+     
+            FindIterable<Document> iterDoc = collection.find();
+           Iterator it = iterDoc.iterator();
+           
+           while(it.hasNext())
+           {
+        	   out.println("<tr>");
+        	   String s=it.next().toString();
+        	   //out.println(s);
+        	   StringTokenizer str=new StringTokenizer(s,",=}");
+        	   int count=0;
+        	   while(str.hasMoreTokens())
+        	   {
+        		 
+        			count++;
+        			String key=str.nextToken();
+					String value=str.nextToken();
+					        		
+        		    if(count>1)
+						out.println("<td class=\"text-success\">"+value+"</td>");
+        		   
+        	   	 // out.println("</tr>");
+        	   }
+        	   //out.println("<tr><td>"+it.next()+"</td></tr>");
+           }
+         
+          
+            
+            
+            out.println("</table>");
+			
+            }catch(Exception e)
+{	
+		out.println(e);
+}
+	
+%>
+
+</body>
+</html>

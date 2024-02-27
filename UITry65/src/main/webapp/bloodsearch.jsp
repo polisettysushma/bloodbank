@@ -1,0 +1,136 @@
+<html>
+<title>Index Page</title>
+<%@ page language="java" import="com.mongodb.client.MongoDatabase" %>
+<%@ page language="java"  import="java.sql.*" %>
+<%@ page language="java"  import="org.bson.Document" %>
+<%@ page language="java" import="com.mongodb.MongoClient" %>
+<%@ page language="java" import="java.util.List" %>
+<%@ page language="java" import="java.util.ArrayList" %>
+<%@page language="java" import ="com.mongodb.client.MongoCollection"%>
+<%@ page language="java" import="java.util.*" %>
+<%@ page language="java" import="java.util.ArrayList" %>
+<%@ page language="java" import= "com.mongodb.client.MongoCursor"%>
+<%@ page import="com.mongodb.client.model.Filters" %>
+<%@ page language="java" import="com.mongodb.client.FindIterable"%>
+
+<style>
+
+
+body {
+  background: #1E1930;
+  color: #D2D1D5;
+}
+tr:nth-child(even) {
+  background-color: #84A089;
+}
+tr:nth-child(odd) {
+  background-color: #C87878;
+}
+th {
+  background-color: #342F44;
+  color: white;
+}
+.noBorder {
+    border:none !important;
+}
+
+
+</style>
+
+<body>
+<br> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<br> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+ <table class="table table-hover table-secondary">
+ 
+ 
+<tr>
+<th  class="text-warning"> User name </th>
+<th class="text-warning">  Name</th>
+ <th class="text-warning">  AGE</th>
+<th class="text-warning">Hieght</th>
+<th class="text-warning">Weight</th>
+<th class="text-warning">Gender</th>
+<th class="text-warning">  Blood group</th>
+<th class="text-warning"> Contact </th>
+<th class="text-warning"> last donated on</th>
+<th class="text-warning"> Status</th>
+<th class="text-warning"> Available amount of Blood(ml)</th>
+</tr>
+
+<%
+String bg=request.getParameter("bloodgrp");
+         try{
+	
+        	
+            //Creating a MongoDB client
+            MongoClient mongo = new MongoClient( "localhost" , 27017 );
+            //Connecting to the database
+            MongoDatabase database = mongo.getDatabase("DPS");
+            //Creating a collection object
+            MongoCollection<Document> collection = database.getCollection("walkin22");
+            //Retrieving the documents
+        
+            
+            String columnName2 = "status";
+            String valuee = "Approved";
+            
+            
+            String columnName = "bloodgroup";
+String targetBloodGroup = bg;
+
+FindIterable<Document> iterDoc = collection.find(Filters.and(
+		Filters.eq(columnName, bg),
+	    Filters.eq("status", "Approved")
+	    
+	));
+
+
+
+     
+            
+           Iterator it = iterDoc.iterator();
+           int qty=0;
+           
+           while(it.hasNext())
+           {
+        	   out.println("<tr>");
+        	   String s=it.next().toString();
+        	   //out.println(s);
+        	   StringTokenizer str=new StringTokenizer(s,",=}");
+        	   int count=0;
+        	   while(str.hasMoreTokens())
+        	   {
+        		 
+        			count++;
+        			String key=str.nextToken();
+					String value=str.nextToken();
+					        		
+					if(count>1 && count!=9 && count < 14)
+						
+        		    	out.println("<td class=\"noBorder\">"+value+"</td>");
+        		   
+        		    
+        	   	 // out.println("</tr>");
+        	   }
+        	   qty++;
+        	   //out.println("<tr><td>"+it.next()+"</td></tr>");
+           }
+         
+         
+            
+            
+            out.println("<center><h2>Total Amount available for "+bg + " Blood Grp is " +qty+" Unit  </h2></center>");
+            		out.println("<br>");
+            		
+			
+            }catch(Exception e)
+{	
+		out.println(e);
+}
+	
+%>
+
+</body>
+</html>
